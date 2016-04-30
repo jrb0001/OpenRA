@@ -1,4 +1,4 @@
-# Visual Studio
+﻿# Visual Studio
 Release
 bin
 obj
@@ -81,3 +81,6 @@ StyleCopViolations.xml
 
 #Attacque Supérior
 /OpenRA.Mods.AS/
+
+# Shattered Paradise
+/mods/sp/
