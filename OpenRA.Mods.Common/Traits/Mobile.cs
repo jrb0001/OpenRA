@@ -88,10 +88,6 @@ namespace OpenRA.Mods.Common.Traits
 	public class Mobile : ConditionalTrait<MobileInfo>, INotifyCreated, IIssueOrder, IResolveOrder, IOrderVoice, IPositionable, IMove,
 		IFacing, IDeathActorInitModifier, INotifyAddedToWorld, INotifyRemovedFromWorld, INotifyBlockingMove, IActorPreviewInitModifier, INotifyBecomingIdle
 	{
-		const int AverageTicksBeforePathing = 5;
-		const int SpreadTicksBeforePathing = 5;
-		internal int TicksBeforePathing = 0;
-
 		readonly Actor self;
 		readonly Lazy<IEnumerable<int>> speedModifiers;
 
@@ -639,8 +635,6 @@ namespace OpenRA.Mods.Common.Traits
 
 				if (!order.Queued)
 					self.CancelActivity();
-
-				TicksBeforePathing = AverageTicksBeforePathing + self.World.SharedRandom.Next(-SpreadTicksBeforePathing, SpreadTicksBeforePathing);
 
 				self.SetTargetLine(Target.FromCell(self.World, loc), Color.Green);
 				self.QueueActivity(order.Queued, new Move(self, loc, WDist.FromCells(8), null, true));
