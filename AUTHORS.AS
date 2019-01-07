@@ -7,6 +7,9 @@ The plugin is maintained by
  * Gyula Zimmermann (Graion Dilach)
    > everything unless listed
 
+ * Andre Mohren (IceReaper)
+   > KKND laser implementation
+
  * Boolbada/forcecore
    > RadBeam implementation
    > ProvidesAIPrerequisite
@@ -31,8 +34,9 @@ The plugin is maintained by
    > DelayedWeapon system
 
  * Mustafa Alperen Seki (MustaphaTR)
-   > GrantConditionOnProduction
+   > ProductionCost/TimeMultiplier
    > mindcontrol traits cleanup
+   > /taunt command
 
  * Pavel Penev (penev92)
    > PaletteFromJasc32File - base JASC palette parser
@@ -43,10 +47,11 @@ The plugin is maintained by
  * jrb0001
    > AmmoPool support for ExplodeWeapon
 
- * Wojciech Walaszek (CDVoidwalker)
+ * Wojciech Walaszek (Voidwalker)
    > TeleportNetwork maintaince
    > WarheadTrailProjectile
    > TintedCells maintaince
+   > TurnOnIdle
 
  Authors of documents used in this plugin:
   * Apollo

@@ -14,7 +14,6 @@ using System.Drawing;
 using System.Linq;
 using OpenRA.Activities;
 using OpenRA.GameRules;
-using OpenRA.Mods.Cnc.Activities;
 using OpenRA.Mods.Common;
 using OpenRA.Mods.Common.Activities;
 using OpenRA.Mods.Common.Orders;
@@ -137,7 +136,12 @@ namespace OpenRA.Mods.Cnc.Traits
 			return new Order(order.OrderID, self, target, queued);
 		}
 
-		Order IIssueDeployOrder.IssueDeployOrder(Actor self)
+		Order IIssueDeployOrder.IssueDeployOrder(Actor self, bool queued)
+		{
+			return new Order("Detonate", self, queued);
+		}
+
+		public Order IssueDeployOrder(Actor self)
 		{
 			return new Order("Detonate", self, false);
 		}
@@ -175,8 +179,6 @@ namespace OpenRA.Mods.Cnc.Traits
 				driverMobile.Nudge(driver, driver, true);
 		}
 
-		public bool PreventsTeleport(Actor self) { return deployed; }
-
 		void StartDetonationSequence()
 		{
 			if (deployed)
@@ -213,7 +215,8 @@ namespace OpenRA.Mods.Cnc.Traits
 			}
 			else if (order.OrderString == "Detonate")
 			{
-				self.CancelActivity();
+				if (!order.Queued)
+					self.CancelActivity();
 				self.QueueActivity(new CallFunc(StartDetonationSequence));
 			}
 		}
