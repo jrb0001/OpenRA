@@ -611,7 +611,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 		{
 			var address = client != null ? client.IpAddress : "";
 			var lc = orderManager.LocalClient;
-			if (lc != null && lc.Index == client.Index && address == IPAddress.Loopback.ToString())
+			if (lc != null && lc.Index == client.Index && address == NetworkUtils.GetLoopbackAddress().ToString())
 			{
 				var externalIP = UPnP.ExternalIP;
 				if (externalIP != null)

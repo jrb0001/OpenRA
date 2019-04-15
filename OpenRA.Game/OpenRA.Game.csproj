@@ -57,10 +57,6 @@
     <StartArguments>Game.Mod=ra</StartArguments>
     <Commandlineparameters>Game.Mod=ra</Commandlineparameters>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
-    <StartAction>Project</StartAction>
-    <StartArguments>Game.Mod=ra</StartArguments>
-  </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Dune 2000' ">
     <StartAction>Project</StartAction>
     <StartArguments>Game.Mod=d2k</StartArguments>
@@ -258,6 +254,7 @@
     <Compile Include="LocalPlayerProfile.cs" />
     <Compile Include="PlayerProfile.cs" />
     <Compile Include="PlayerDatabase.cs" />
+    <Compile Include="Network\NetworkUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileSystem\Folder.cs" />

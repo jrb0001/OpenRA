@@ -15,6 +15,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 using OpenRA.Server;
+using System.Net;
 
 namespace OpenRA.Network
 {
@@ -142,18 +143,19 @@ namespace OpenRA.Network
 		volatile int clientId;
 		bool disposed;
 
-		public NetworkConnection(string host, int port)
+		public NetworkConnection(IPEndPoint endpoint)
 		{
 			try
 			{
-				tcp = new TcpClient(host, port) { NoDelay = true };
+				tcp = new TcpClient(endpoint.AddressFamily) { NoDelay = true };
+				tcp.Connect(endpoint);
 				new Thread(NetworkConnectionReceive)
 				{
-					Name = GetType().Name + " " + host + ":" + port,
+					Name = GetType().Name + " " + endpoint,
 					IsBackground = true
 				}.Start(tcp.GetStream());
 			}
-			catch
+			catch(Exception ex)
 			{
 				connectionState = ConnectionState.NotConnected;
 			}

@@ -13,6 +13,7 @@ using System;
 using System.Linq;
 using OpenRA.Network;
 using OpenRA.Widgets;
+using System.Net;
 
 namespace OpenRA.Mods.Common.Widgets.Logic
 {
@@ -25,7 +26,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 		readonly ServerListLogic serverListLogic;
 
 		[ObjectCreator.UseCtor]
-		public MultiplayerLogic(Widget widget, ModData modData, Action onStart, Action onExit, string directConnectHost, int directConnectPort)
+		public MultiplayerLogic(Widget widget, ModData modData, Action onStart, Action onExit, IPEndPoint directConnectEndpoint)
 		{
 			// MultiplayerLogic is a superset of the ServerListLogic
 			// but cannot be a direct subclass because it needs to pass object-level state to the constructor
@@ -41,8 +42,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 				{
 					{ "openLobby", OpenLobby },
 					{ "onExit", DoNothing },
-					{ "directConnectHost", null },
-					{ "directConnectPort", 0 },
+					{ "directConnectEndpoint", null },
 				});
 			};
 
@@ -61,7 +61,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 
 			widget.Get<ButtonWidget>("BACK_BUTTON").OnClick = () => { Ui.CloseWindow(); onExit(); };
 
-			if (directConnectHost != null)
+			if (directConnectEndpoint != null)
 			{
 				// The connection window must be opened at the end of the tick for the widget hierarchy to
 				// work out, but we also want to prevent the server browser from flashing visible for one tick.
@@ -72,8 +72,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 					{
 						{ "openLobby", OpenLobby },
 						{ "onExit", DoNothing },
-						{ "directConnectHost", directConnectHost },
-						{ "directConnectPort", directConnectPort },
+						{ "directConnectEndpoint", directConnectEndpoint },
 					});
 
 					widget.Visible = true;
@@ -93,8 +92,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 				{
 					{ "onStart", onStart },
 					{ "onExit", onExit },
-					{ "directConnectHost", null },
-					{ "directConnectPort", 0 },
+					{ "directConnectEndpoint", null },
 				});
 
 				Game.Disconnect();
@@ -113,10 +111,9 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 			if (server == null || !server.IsJoinable)
 				return;
 
-			var host = server.Address.Split(':')[0];
-			var port = Exts.ParseIntegerInvariant(server.Address.Split(':')[1]);
-
-			ConnectionLogic.Connect(host, port, "", OpenLobby, DoNothing);
+			var endpoint = NetworkUtils.ParseEndpoint(server.Address);
+			if (endpoint != null)
+				ConnectionLogic.Connect(endpoint, "", OpenLobby, DoNothing);
 		}
 
 		bool disposed;

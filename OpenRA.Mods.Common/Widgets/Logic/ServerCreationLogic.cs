@@ -215,7 +215,7 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 			}
 
 			Ui.CloseWindow();
-			ConnectionLogic.Connect(IPAddress.Loopback.ToString(), Game.Settings.Server.ListenPort, password, onCreate, onExit);
+			ConnectionLogic.Connect(new IPEndPoint(NetworkUtils.GetLoopbackAddress(), Game.Settings.Server.ListenPort), password, onCreate, onExit);
 		}
 	}
 }

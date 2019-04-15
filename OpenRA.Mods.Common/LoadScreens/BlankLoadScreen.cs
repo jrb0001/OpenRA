@@ -16,6 +16,7 @@ using System.Linq;
 using OpenRA.FileFormats;
 using OpenRA.Mods.Common.Widgets.Logic;
 using OpenRA.Widgets;
+using System.Net;
 
 namespace OpenRA.Mods.Common.LoadScreens
 {
@@ -59,19 +60,12 @@ namespace OpenRA.Mods.Common.LoadScreens
 			}
 
 			// Join a server directly
-			var connect = Launch.GetConnectAddress();
-			if (!string.IsNullOrEmpty(connect))
+			var endpoint = NetworkUtils.ParseEndpoint(Launch.GetConnectAddress());
+			if (endpoint != null)
 			{
-				var parts = connect.Split(':');
-
-				if (parts.Length == 2)
-				{
-					var host = parts[0];
-					var port = Exts.ParseIntegerInvariant(parts[1]);
-					Game.LoadShellMap();
-					Game.RemoteDirectConnect(host, port);
-					return;
-				}
+				Game.LoadShellMap();
+				Game.RemoteDirectConnect(endpoint);
+				return;
 			}
 
 			// Load a replay directly

@@ -11,6 +11,7 @@
 
 using System;
 using OpenRA.Widgets;
+using System.Net;
 
 namespace OpenRA.Mods.Common.Widgets.Logic
 {
@@ -19,36 +20,33 @@ namespace OpenRA.Mods.Common.Widgets.Logic
 		static readonly Action DoNothing = () => { };
 
 		[ObjectCreator.UseCtor]
-		public DirectConnectLogic(Widget widget, Action onExit, Action openLobby, string directConnectHost, int directConnectPort)
+		public DirectConnectLogic(Widget widget, Action onExit, Action openLobby, IPEndPoint directConnectEndpoint)
 		{
 			var panel = widget;
 			var ipField = panel.Get<TextFieldWidget>("IP");
-			var portField = panel.Get<TextFieldWidget>("PORT");
 
-			var last = Game.Settings.Player.LastServer.Split(':');
-			ipField.Text = last.Length > 1 ? last[0] : "localhost";
-			portField.Text = last.Length == 2 ? last[1] : "1234";
+			ipField.Text = Game.Settings.Player.LastServer;
 
 			panel.Get<ButtonWidget>("JOIN_BUTTON").OnClick = () =>
 			{
-				var port = Exts.WithDefault(1234, () => Exts.ParseIntegerInvariant(portField.Text));
-
-				Game.Settings.Player.LastServer = "{0}:{1}".F(ipField.Text, port);
+				Game.Settings.Player.LastServer = ipField.Text;
 				Game.Settings.Save();
 
-				ConnectionLogic.Connect(ipField.Text, port, "", () => { Ui.CloseWindow(); openLobby(); }, DoNothing);
+				var endpoint = NetworkUtils.ParseEndpoint(ipField.Text);
+				if (endpoint != null)
+					ConnectionLogic.Connect(endpoint, "", () => { Ui.CloseWindow(); openLobby(); }, DoNothing);
 			};
 
 			panel.Get<ButtonWidget>("BACK_BUTTON").OnClick = () => { Ui.CloseWindow(); onExit(); };
 
-			if (directConnectHost != null)
+			if (directConnectEndpoint != null)
 			{
 				// The connection window must be opened at the end of the tick for the widget hierarchy to
 				// work out, but we also want to prevent the server browser from flashing visible for one tick.
 				widget.Visible = false;
 				Game.RunAfterTick(() =>
 				{
-					ConnectionLogic.Connect(directConnectHost, directConnectPort, "", () => { Ui.CloseWindow(); openLobby(); }, DoNothing);
+					ConnectionLogic.Connect(directConnectEndpoint, "", () => { Ui.CloseWindow(); openLobby(); }, DoNothing);
 					widget.Visible = true;
 				});
 			}

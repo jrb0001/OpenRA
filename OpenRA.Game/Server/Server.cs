@@ -36,8 +36,7 @@ namespace OpenRA.Server
 	{
 		public readonly string TwoHumansRequiredText = "This server requires at least two human players to start a match.";
 
-		public readonly IPAddress Ip;
-		public readonly int Port;
+		public readonly IPEndPoint Endpoint;
 		public readonly MersenneTwister Random = new MersenneTwister();
 		public readonly bool Dedicated;
 
@@ -127,9 +126,7 @@ namespace OpenRA.Server
 
 			listener = new TcpListener(endpoint);
 			listener.Start();
-			var localEndpoint = (IPEndPoint)listener.LocalEndpoint;
-			Ip = localEndpoint.Address;
-			Port = localEndpoint.Port;
+			Endpoint = (IPEndPoint)listener.LocalEndpoint;
 			Dedicated = dedicated;
 			Settings = settings;
 

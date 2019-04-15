@@ -12,6 +12,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using OpenRA.Primitives;
 using OpenRA.Support;
 
@@ -28,8 +29,7 @@ namespace OpenRA.Network
 		public Session.Client LocalClient { get { return LobbyInfo.ClientWithIndex(Connection.LocalClientId); } }
 		public World World;
 
-		public readonly string Host;
-		public readonly int Port;
+		public readonly IPEndPoint Endpoint;
 		public readonly string Password = "";
 
 		public string ServerError = "Server is not responding";
@@ -74,10 +74,9 @@ namespace OpenRA.Network
 				Connection.Send(i, new List<byte[]>());
 		}
 
-		public OrderManager(string host, int port, string password, IConnection conn)
+		public OrderManager(IPEndPoint endpoint, string password, IConnection conn)
 		{
-			Host = host;
-			Port = port;
+			Endpoint = endpoint;
 			Password = password;
 			Connection = conn;
 			syncReport = new SyncReport(this);
